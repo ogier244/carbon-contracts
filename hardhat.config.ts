@@ -204,6 +204,21 @@ const config: HardhatUserConfig = {
                 }
             }
         },
+        [DeploymentNetwork.HederaTestnet]: {
+            chainId: chainIds[DeploymentNetwork.HederaTestnet],
+            url: rpcUrls[DeploymentNetwork.HederaTestnet],
+            accounts: process.env.HEDERA_TESTNET_PRIVATE_KEY ? [`0x${process.env.HEDERA_TESTNET_PRIVATE_KEY}`] : [],
+            gasPrice,
+            saveDeployments: true,
+            live: true,
+            deploy: [`deploy/scripts/${DeploymentNetwork.HederaTestnet}`]
+            // Verification for HashScan might need a custom setup or plugin
+            // verify: {
+            //     etherscan: { // This is Etherscan specific
+            //         apiKey: VERIFY_API_KEY
+            //     }
+            // }
+        },
         [DeploymentNetwork.ZkSync]: {
             chainId: chainIds[DeploymentNetwork.ZkSync],
             url: rpcUrls[DeploymentNetwork.ZkSync],
@@ -504,30 +519,6 @@ const config: HardhatUserConfig = {
                 }
             }
         },
-        [DeploymentNetwork.Tac]: {
-            chainId: chainIds[DeploymentNetwork.Tac],
-            url: rpcUrls[DeploymentNetwork.Tac],
-            saveDeployments: true,
-            live: true,
-            deploy: [`deploy/scripts/${DeploymentNetwork.Tac}`],
-            verify: {
-                etherscan: {
-                    apiKey: VERIFY_API_KEY
-                }
-            }
-        },
-        [DeploymentNetwork.TacTestnet]: {
-            chainId: chainIds[DeploymentNetwork.TacTestnet],
-            url: rpcUrls[DeploymentNetwork.TacTestnet],
-            saveDeployments: true,
-            live: true,
-            deploy: [`deploy/scripts/${DeploymentNetwork.TacTestnet}`],
-            verify: {
-                etherscan: {
-                    apiKey: VERIFY_API_KEY
-                }
-            }
-        },
         [DeploymentNetwork.Sepolia]: {
             chainId: chainIds[DeploymentNetwork.Sepolia],
             url: rpcUrls[DeploymentNetwork.Sepolia],
@@ -615,22 +606,6 @@ const config: HardhatUserConfig = {
                 apiURL: "https://api.berascan.com/api",
                 browserURL: "https://berascan.com"
               }
-            },
-            {
-              network: DeploymentNetwork.Tac,
-              chainId: chainIds[DeploymentNetwork.Tac],
-              urls: {
-                apiURL: "https://explorer.tac.build/api",
-                browserURL: "https://explorer.tac.build"
-              }
-            },
-            {
-              network: DeploymentNetwork.TacTestnet,
-              chainId: chainIds[DeploymentNetwork.TacTestnet],
-              urls: {
-                apiURL: "https://spb.explorer.tac.build/api",
-                browserURL: "https://spb.explorer.tac.build"
-              }
             }
           ]
     },
@@ -642,7 +617,7 @@ const config: HardhatUserConfig = {
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 2000
+                        runs: 200
                     },
                     metadata: {
                         bytecodeHash: 'none'

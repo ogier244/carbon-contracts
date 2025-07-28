@@ -1,12 +1,13 @@
 import Contracts from '../components/Contracts';
 import { DeployedContracts, execute, getNamedSigners, InstanceName } from '../utils/Deploy';
 import Logger from '../utils/Logger';
-import { DEFAULT_DECIMALS, NATIVE_TOKEN_ADDRESS, TokenSymbol } from '../utils/TokenData';
+import { DEFAULT_DECIMALS, HBAR_DECIMALS, NATIVE_TOKEN_ADDRESS, TokenSymbol } from '../utils/TokenData';
 import '@nomiclabs/hardhat-ethers';
 import '@typechain/hardhat';
 import { CoinGeckoClient } from 'coingecko-api-v3';
 import Decimal from 'decimal.js';
 import fs from 'fs';
+import { ethers } from 'hardhat';
 
 interface EnvOptions {
     ENABLE_TRADING?: boolean;
@@ -42,6 +43,7 @@ const TOKEN_OVERRIDES: TokenOverride[] = [
 const main = async () => {
     const { deployer } = await getNamedSigners();
     const carbonPOL = await DeployedContracts.CarbonPOL.deployed();
+    const network = await ethers.provider.getNetwork();
 
     const client = new CoinGeckoClient({
         timeout: 10000,
@@ -76,10 +78,17 @@ const main = async () => {
     let decimals: number;
     for (let i = 0; i < TOKEN_ADDRESSES.length; i++) {
         const token = TOKEN_ADDRESSES[i];
+        const networkName = network.name;
 
         if (token === NATIVE_TOKEN_ADDRESS) {
-            symbol = TokenSymbol.ETH;
-            decimals = DEFAULT_DECIMALS;
+            // For Hedera networks, use HBAR
+            if (networkName === 'hedera' || networkName === 'hederaTestnet') {
+                symbol = TokenSymbol.HBAR;
+                decimals = HBAR_DECIMALS;
+            } else {
+                symbol = TokenSymbol.ETH;
+                decimals = DEFAULT_DECIMALS;
+            }
         } else {
             const tokenOverride = TOKEN_OVERRIDES.find((t) => t.address.toLowerCase() === token.toLowerCase());
             const tokenContract = await Contracts.ERC20.attach(token, deployer);

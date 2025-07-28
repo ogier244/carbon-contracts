@@ -49,6 +49,9 @@ abstract contract Upgradeable is IUpgradeable, AccessControlEnumerableUpgradeabl
 
         // allow the deployer to initially be the admin of the contract
         _setupRole(ROLE_ADMIN, msg.sender);
+
+        // added for hedera integration as default admin role needed to grant role_minter role
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     // solhint-enable func-name-mixedcase

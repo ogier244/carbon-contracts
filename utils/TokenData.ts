@@ -1,10 +1,12 @@
 import { defaults } from 'lodash';
 
 export const DEFAULT_DECIMALS = 18;
+export const HBAR_DECIMALS = 8;
 export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export enum TokenSymbol {
     ETH = 'ETH',
+    HBAR = 'HBAR',
     BNT = 'BNT',
     USDC = 'USDC',
     DAI = 'DAI',
@@ -31,6 +33,13 @@ const TOKEN_DATA = {
     [TokenSymbol.ETH]: {
         name: 'Ethereum',
         decimals: DEFAULT_DECIMALS,
+        errors: {
+            exceedsBalance: 'Address: insufficient balance'
+        }
+    },
+    [TokenSymbol.HBAR]: {
+        name: 'Hedera',
+        decimals: HBAR_DECIMALS,
         errors: {
             exceedsBalance: 'Address: insufficient balance'
         }

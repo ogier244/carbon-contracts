@@ -261,13 +261,16 @@ const BancorNamedAccounts = {
 
 const VortexNamedAccounts = {
     targetToken: {
-        ...getAddress(mainnet, NATIVE_TOKEN_ADDRESS)
+        ...getAddress(mainnet, NATIVE_TOKEN_ADDRESS),
+        [DeploymentNetwork.HederaTestnet]: NATIVE_TOKEN_ADDRESS
     },
     finalTargetToken: {
-        ...getAddress(mainnet, '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C')
+        ...getAddress(mainnet, '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'),
+        [DeploymentNetwork.HederaTestnet]: ZERO_ADDRESS
     },
     transferAddress: {
-        ...getAddress(mainnet, '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C')
+        ...getAddress(mainnet, '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'),
+        [DeploymentNetwork.HederaTestnet]: '0x5bEBA4D3533a963Dedb270a95ae5f7752fA0Fe22' // Using deployer address as transfer address
     }
 };
 

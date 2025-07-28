@@ -17,10 +17,10 @@ using Address for address payable;
 address constant NATIVE_TOKEN_ADDRESS = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
 // the symbol that represents the native token
-string constant NATIVE_TOKEN_SYMBOL = "ETH";
+string constant NATIVE_TOKEN_SYMBOL = "HBAR";
 
 // the decimals for the native token
-uint8 constant NATIVE_TOKEN_DECIMALS = 18;
+uint8 constant NATIVE_TOKEN_DECIMALS = 8;
 
 // the token representing the native token
 Token constant NATIVE_TOKEN = Token.wrap(NATIVE_TOKEN_ADDRESS);

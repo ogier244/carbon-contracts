@@ -37,7 +37,6 @@ export enum MainnetNetwork {
     PulseChain = 'pulsechain',
     Rootstock = 'rootstock',
     Scroll = 'scroll',
-    Tac = 'tac',
     Telos = 'telos',
     ZkSync = 'zksync',
     Sei = 'sei',
@@ -47,9 +46,9 @@ export enum MainnetNetwork {
 export enum TestnetNetwork {
     Hardhat = 'hardhat',
     Sepolia = 'sepolia',
-    TacTestnet = 'tac-testnet',
     Tenderly = 'tenderly',
-    TenderlyTestnet = 'tenderly-testnet'
+    TenderlyTestnet = 'tenderly-testnet',
+    HederaTestnet = 'hederaTestnet'
 }
 
 export const DeploymentNetwork = {
