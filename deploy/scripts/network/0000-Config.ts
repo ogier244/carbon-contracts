@@ -9,9 +9,10 @@ const func: DeployFunction = async ({ network, getNamedAccounts }: HardhatRuntim
     Logger.log(`Deploying to network: ${networkName}`);
     
     // Hedera-specific configuration
-    if (networkName === 'hederaTestnet') {
+    if (networkName === 'hedera-testnet') {
         Logger.log('Configuring for Hedera Testnet...');
         Logger.log('- Native token: HBAR (8 decimals)');
+        Logger.log('- Network ID: 296');
         
         // Any Hedera-specific configuration can be done here
         // Note: Actual token.sol modifications need to be done separately

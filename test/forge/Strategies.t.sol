@@ -98,6 +98,13 @@ contract StrategiesTest is TestFixture {
         systemFixture();
         // Deploy Carbon Controller and Voucher
         setupCarbonController();
+
+        // Mock Associate tokens to carbon controller
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(token0));
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(token1));
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(token2));
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(feeOnTransferToken));
+
         // Approve tokens to carbon controller
         vm.startPrank(admin);
         uint256 approveAmount = MAX_SOURCE_AMOUNT;
@@ -426,6 +433,9 @@ contract StrategiesTest is TestFixture {
             vm.stopPrank();
             vm.startPrank(user1);
         }
+
+        // mock HTS associate for reentrant token
+        mockCallsHtsAssociateSuccess(address(carbonController), address(reentrantToken));
 
         // test revert for reentrancy token
         // reverts in the "safeTransferFrom" call in _validateDepositAndRefundExcessNativeToken
@@ -1607,6 +1617,10 @@ contract StrategiesTest is TestFixture {
         TestVoucher newVoucher = deployVoucher();
         // Deploy Carbon Controller
         TestCarbonController newCarbonController = deployCarbonController(newVoucher);
+
+        // mock HTS associate calls
+        mockCallsHtsAssociateSuccess(address(newCarbonController), Token.unwrap(token0));
+        mockCallsHtsAssociateSuccess(address(newCarbonController), Token.unwrap(token1));
 
         vm.startPrank(admin);
 

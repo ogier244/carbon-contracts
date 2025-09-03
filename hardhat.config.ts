@@ -194,30 +194,29 @@ const config: HardhatUserConfig = {
         [DeploymentNetwork.Hedera]: {
             chainId: chainIds[DeploymentNetwork.Hedera],
             url: rpcUrls[DeploymentNetwork.Hedera],
+            accounts: process.env.HEDERA_DEPLOY_PRIVATE_KEY ? [`0x${process.env.HEDERA_DEPLOY_PRIVATE_KEY}`] : [],
             gasPrice,
             saveDeployments: true,
             live: true,
-            deploy: [`deploy/scripts/${DeploymentNetwork.Hedera}`],
-            verify: {
-                etherscan: {
-                    apiKey: VERIFY_API_KEY
-                }
-            }
+            deploy: [`deploy/scripts/${DeploymentNetwork.Hedera}`]
         },
         [DeploymentNetwork.HederaTestnet]: {
             chainId: chainIds[DeploymentNetwork.HederaTestnet],
             url: rpcUrls[DeploymentNetwork.HederaTestnet],
-            accounts: process.env.HEDERA_TESTNET_PRIVATE_KEY ? [`0x${process.env.HEDERA_TESTNET_PRIVATE_KEY}`] : [],
+            accounts: process.env.HEDERA_DEPLOY_PRIVATE_KEY ? [`0x${process.env.HEDERA_DEPLOY_PRIVATE_KEY}`] : [],
             gasPrice,
             saveDeployments: true,
             live: true,
             deploy: [`deploy/scripts/${DeploymentNetwork.HederaTestnet}`]
-            // Verification for HashScan might need a custom setup or plugin
-            // verify: {
-            //     etherscan: { // This is Etherscan specific
-            //         apiKey: VERIFY_API_KEY
-            //     }
-            // }
+        },
+        [DeploymentNetwork.HederaLocalnet]: {
+            chainId: chainIds[DeploymentNetwork.HederaLocalnet],
+            url: rpcUrls[DeploymentNetwork.HederaLocalnet],
+            accounts: process.env.HEDERA_DEPLOY_PRIVATE_KEY ? [`0x${process.env.HEDERA_DEPLOY_PRIVATE_KEY}`] : [],
+            gasPrice,
+            saveDeployments: true,
+            live: true,
+            deploy: [`deploy/scripts/${DeploymentNetwork.HederaLocalnet}`]
         },
         [DeploymentNetwork.ZkSync]: {
             chainId: chainIds[DeploymentNetwork.ZkSync],

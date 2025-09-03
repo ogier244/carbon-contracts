@@ -127,6 +127,12 @@ contract TradingTest is TestFixture {
         symbolToToken["TKN0"] = token0;
         symbolToToken["TKN1"] = token1;
         symbolToToken["TKN2"] = token2;
+
+        // Mock Associate tokens to carbon controller
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(token0));
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(token1));
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(token2));
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(feeOnTransferToken));
     }
 
     /**

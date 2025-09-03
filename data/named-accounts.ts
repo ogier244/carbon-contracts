@@ -262,15 +262,21 @@ const BancorNamedAccounts = {
 const VortexNamedAccounts = {
     targetToken: {
         ...getAddress(mainnet, NATIVE_TOKEN_ADDRESS),
-        [DeploymentNetwork.HederaTestnet]: NATIVE_TOKEN_ADDRESS
+        [DeploymentNetwork.Hedera]: NATIVE_TOKEN_ADDRESS,
+        [DeploymentNetwork.HederaTestnet]: NATIVE_TOKEN_ADDRESS,
+        [DeploymentNetwork.HederaLocalnet]: NATIVE_TOKEN_ADDRESS
     },
     finalTargetToken: {
         ...getAddress(mainnet, '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'),
-        [DeploymentNetwork.HederaTestnet]: ZERO_ADDRESS
+        [DeploymentNetwork.Hedera]: ZERO_ADDRESS,
+        [DeploymentNetwork.HederaTestnet]: ZERO_ADDRESS,
+        [DeploymentNetwork.HederaLocalnet]: ZERO_ADDRESS
     },
     transferAddress: {
         ...getAddress(mainnet, '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C'),
-        [DeploymentNetwork.HederaTestnet]: '0x5bEBA4D3533a963Dedb270a95ae5f7752fA0Fe22' // Using deployer address as transfer address
+        [DeploymentNetwork.Hedera]: '0x1afA3290b2b15583C6d5B86F4F557477CB04877E', // Using deployer address as transfer address
+        [DeploymentNetwork.HederaTestnet]: '0x5bEBA4D3533a963Dedb270a95ae5f7752fA0Fe22', // Using deployer address as transfer address
+        [DeploymentNetwork.HederaLocalnet]: '0x3A73e0A0DB0e9379b0bc2ce7450336a78bBf35E7' // Using deployer address as transfer address
     }
 };
 

@@ -9,20 +9,9 @@ import { Upgradeable } from "../utility/Upgradeable.sol";
 import { IVoucher } from "../voucher/interfaces/IVoucher.sol";
 import { ICarbonController } from "./interfaces/ICarbonController.sol";
 import { Utils, AccessDenied } from "../utility/Utils.sol";
+import { HederaTokenService } from "../utility/HederaTokenService.sol";
 import { OnlyProxyDelegate } from "../utility/OnlyProxyDelegate.sol";
 import { MAX_GAP } from "../utility/Constants.sol";
-
-// HEDERA TOKEN SERVICE INTEGRATION: START
-// Custom addition to support HTS token association
-interface IHederaTokenService {
-    function associateToken(address account, address token)
-        external returns (int64 responseCode);
-}
-
-address constant HTS = 0x0000000000000000000000000000000000000167;
-int64  constant RC_SUCCESS  = 22;
-int64  constant RC_ALREADY  = 194;
-// HEDERA TOKEN SERVICE INTEGRATION: END
 
 /**
  * @dev Carbon Controller contract
@@ -133,29 +122,6 @@ contract CarbonController is
         return _getPairTradingFeePPM(_pair.id);
     }
 
-    // HEDERA TOKEN SERVICE INTEGRATION: START
-    /**
-     * @dev associates a Hedera token with this contract
-     * Only callable by admin
-     * Required for HTS tokens to be used with the protocol
-     */
-    function associateToken(address token) external onlyAdmin {
-        int64 rc = IHederaTokenService(HTS).associateToken(address(this), token);
-        require(rc == RC_SUCCESS || rc == RC_ALREADY, "HTS_ASSOC_FAIL");
-    }
-
-    /**
-     * @dev batch associates multiple Hedera tokens with this contract
-     * Only callable by admin
-     */
-    function batchAssociateTokens(address[] calldata tokens) external onlyAdmin {
-        for (uint256 i; i < tokens.length; ++i) {
-            int64 rc = IHederaTokenService(HTS).associateToken(address(this), tokens[i]);
-            require(rc == RC_SUCCESS || rc == RC_ALREADY, "HTS_ASSOC_FAIL");
-        }
-    }
-    // HEDERA TOKEN SERVICE INTEGRATION: END
-
     /**
      * @dev sets the trading fee (in units of PPM)
      *
@@ -230,6 +196,13 @@ contract CarbonController is
         Pair memory strategyPair;
         if (!_pairExists(token0, token1)) {
             strategyPair = _createPair(token0, token1);
+
+            // make sure the controller is associated with HTS tokens
+            for (uint256 i = 0; i < strategyPair.tokens.length; i = uncheckedInc(i)) {
+                if (HederaTokenService.isHTSToken(strategyPair.tokens[i])) {
+                    HederaTokenService.safeAssociateToken(address(this), Token.unwrap(strategyPair.tokens[i]));
+                }
+            }
         } else {
             strategyPair = _pair(token0, token1);
         }
