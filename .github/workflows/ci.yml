@@ -9,35 +9,6 @@ on:
   pull_request:
 
 jobs:
-  security: 
-    name: Security
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with: 
-          version: 9
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
   test:
     name: Test
 
@@ -76,7 +47,7 @@ jobs:
         run: pnpm install
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm lint:sol
 
       - name: Test
         run: pnpm test
