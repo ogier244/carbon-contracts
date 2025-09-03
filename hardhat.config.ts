@@ -194,15 +194,11 @@ const config: HardhatUserConfig = {
         [DeploymentNetwork.Hedera]: {
             chainId: chainIds[DeploymentNetwork.Hedera],
             url: rpcUrls[DeploymentNetwork.Hedera],
+            accounts: process.env.HEDERA_DEPLOY_PRIVATE_KEY ? [`0x${process.env.HEDERA_DEPLOY_PRIVATE_KEY}`] : [],
             gasPrice,
             saveDeployments: true,
             live: true,
-            deploy: [`deploy/scripts/${DeploymentNetwork.Hedera}`],
-            verify: {
-                etherscan: {
-                    apiKey: VERIFY_API_KEY
-                }
-            }
+            deploy: [`deploy/scripts/${DeploymentNetwork.Hedera}`]
         },
         [DeploymentNetwork.HederaTestnet]: {
             chainId: chainIds[DeploymentNetwork.HederaTestnet],
