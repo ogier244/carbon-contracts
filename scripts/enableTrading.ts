@@ -82,7 +82,7 @@ const main = async () => {
 
         if (token === NATIVE_TOKEN_ADDRESS) {
             // For Hedera networks, use HBAR
-            if (networkName === 'hedera' || networkName === 'hederaTestnet') {
+            if (networkName === 'hedera' || networkName === 'hedera-testnet') {
                 symbol = TokenSymbol.HBAR;
                 decimals = HBAR_DECIMALS;
             } else {

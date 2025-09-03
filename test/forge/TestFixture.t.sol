@@ -26,6 +26,8 @@ import { IVault } from "../../contracts/utility/interfaces/IVault.sol";
 
 import { Token } from "../../contracts/token/Token.sol";
 
+import { IHederaTokenService } from "../../contracts/utility/interfaces/IHederaTokenService.sol";
+
 // solhint-disable max-states-count
 
 /**
@@ -54,6 +56,9 @@ contract TestFixture is Test {
 
     address internal constant NATIVE_TOKEN_ADDRESS = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     uint256 internal constant MAX_SOURCE_AMOUNT = 100_000_000 ether;
+
+    address internal constant HTS_PRECOMPILE_ADDRESS = address(0x167);
+    int32 internal constant HTS_RC_SUCCESS = 22;
 
     function systemFixture() internal {
         utils = new Utilities();
@@ -276,5 +281,19 @@ contract TestFixture is Test {
         // transfer eth
         vm.deal(address(carbonPOL), MAX_SOURCE_AMOUNT);
         vm.stopPrank();
+    }
+
+    function mockCallsHtsAssociateSuccess(address _callee, address _token) internal {
+        vm.mockCall(
+            HTS_PRECOMPILE_ADDRESS,
+            abi.encodeWithSelector(IHederaTokenService.isToken.selector, _token),
+            abi.encode(HTS_RC_SUCCESS, true)
+        );
+
+        vm.mockCall(
+            HTS_PRECOMPILE_ADDRESS,
+            abi.encodeWithSelector(IHederaTokenService.associateToken.selector, _callee, _token),
+            abi.encode(HTS_RC_SUCCESS)
+        );
     }
 }

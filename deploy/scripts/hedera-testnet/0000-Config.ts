@@ -22,6 +22,7 @@ const func: DeployFunction = async ({ network, getNamedAccounts }: HardhatRuntim
 };
 
 // Set this to run first
+func.id = '0000-Config';
 func.tags = ['Config'];
 func.runAtTheEnd = false;
 

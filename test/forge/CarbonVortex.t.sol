@@ -25,6 +25,7 @@ contract CarbonVortexTest is TestFixture {
 
     Token private targetToken;
     Token private finalTargetToken;
+    uint128 private ONE_TARGET_TOKEN;
 
     // Test case parser helper
     VortexTestCaseParser private testCaseParser;
@@ -44,11 +45,11 @@ contract CarbonVortexTest is TestFixture {
     uint32 private constant TARGET_TOKEN_PRICE_DECAY_HALFLIFE_DEFAULT = 10 days;
     uint32 private constant TARGET_TOKEN_PRICE_DECAY_HALFLIFE_UPDATED = 15 days;
 
-    uint128 private constant MAX_TARGET_TOKEN_SALE_AMOUNT_DEFAULT = 100 ether;
-    uint128 private constant MAX_TARGET_TOKEN_SALE_AMOUNT_UPDATED = 150 ether;
+    uint128 private constant MAX_TARGET_TOKEN_SALE_AMOUNT_DEFAULT = 100e8; // 100 HBAR
+    uint128 private constant MAX_TARGET_TOKEN_SALE_AMOUNT_UPDATED = 150e8; // 150 HBAR
 
-    uint128 private constant MIN_TARGET_TOKEN_SALE_AMOUNT_DEFAULT = 10 ether;
-    uint128 private constant MIN_TARGET_TOKEN_SALE_AMOUNT_UPDATED = 15 ether;
+    uint128 private constant MIN_TARGET_TOKEN_SALE_AMOUNT_DEFAULT = 10e8; // 10 HBAR
+    uint128 private constant MIN_TARGET_TOKEN_SALE_AMOUNT_UPDATED = 15e8; // 15 HBAR
 
     address payable private constant TRANSFER_ADDRESS_UPDATED = payable(0);
 
@@ -157,6 +158,7 @@ contract CarbonVortexTest is TestFixture {
         vault = deployVault();
         // set up target token
         targetToken = NATIVE_TOKEN;
+        ONE_TARGET_TOKEN = uint128(10 ** targetToken.decimals());
         // set up final target token
         finalTargetToken = bnt;
         // set up transfer address
@@ -1225,7 +1227,7 @@ contract CarbonVortexTest is TestFixture {
         vm.startPrank(admin);
 
         // set fees
-        uint256 accumulatedFees = 100 ether;
+        uint256 accumulatedFees = 100 * ONE_TARGET_TOKEN;
         carbonController.testSetAccumulatedFees(targetToken, accumulatedFees);
 
         vm.stopPrank();
@@ -1238,7 +1240,7 @@ contract CarbonVortexTest is TestFixture {
         carbonVortex.execute(tokens);
 
         // trade target for final target
-        uint128 targetAmount = 1 ether;
+        uint128 targetAmount = ONE_TARGET_TOKEN;
 
         uint256 targetBalanceBeforeVortex = targetToken.balanceOf(address(carbonVortex));
         uint256 targetBalanceBeforeUser = targetToken.balanceOf(user1);
@@ -1276,7 +1278,7 @@ contract CarbonVortexTest is TestFixture {
     function testShouldTransferFundsToTransferAddressAtEndOfFinalTargetToTargetTokenTrade() public {
         vm.prank(admin);
         // set fees
-        uint256 accumulatedFees = 100 ether;
+        uint256 accumulatedFees = 100 * ONE_TARGET_TOKEN;
         carbonController.testSetAccumulatedFees(targetToken, accumulatedFees);
 
         vm.startPrank(user1);
@@ -1287,7 +1289,7 @@ contract CarbonVortexTest is TestFixture {
         carbonVortex.execute(tokens);
 
         // trade target for final target
-        uint128 targetAmount = 1 ether;
+        uint128 targetAmount = ONE_TARGET_TOKEN;
 
         uint256 finalTargetBalanceBefore = finalTargetToken.balanceOf(transferAddress);
 
@@ -1316,7 +1318,7 @@ contract CarbonVortexTest is TestFixture {
         deployCarbonVortex(address(carbonController), vault, address(0), targetToken, finalTargetToken);
         vm.prank(admin);
         // set fees
-        uint256 accumulatedFees = 100 ether;
+        uint256 accumulatedFees = 100 * ONE_TARGET_TOKEN;
         carbonController.testSetAccumulatedFees(targetToken, accumulatedFees);
 
         vm.startPrank(user1);
@@ -1327,7 +1329,7 @@ contract CarbonVortexTest is TestFixture {
         carbonVortex.execute(tokens);
 
         // trade target for final target
-        uint128 targetAmount = 1 ether;
+        uint128 targetAmount = ONE_TARGET_TOKEN;
 
         uint256 finalTargetBalanceBefore = finalTargetToken.balanceOf(address(carbonVortex));
 
@@ -1463,7 +1465,7 @@ contract CarbonVortexTest is TestFixture {
         Token token = token1;
         uint256 accumulatedFees = 100 ether;
         carbonController.testSetAccumulatedFees(token, accumulatedFees);
-        carbonController.testSetAccumulatedFees(targetToken, accumulatedFees);
+        carbonController.testSetAccumulatedFees(targetToken, 100 * ONE_TARGET_TOKEN);
 
         vm.startPrank(user1);
 
@@ -1485,7 +1487,7 @@ contract CarbonVortexTest is TestFixture {
 
         // we need to sell at least minSaleAmount / minTokenSaleAmountMultiplier
         uint128 tradeAmountToResetTheMinSale = amountAvailableForTrading +
-            1e18 -
+            ONE_TARGET_TOKEN -
             minSaleAmount /
             minTokenSaleAmountMultiplier;
 
@@ -1874,7 +1876,7 @@ contract CarbonVortexTest is TestFixture {
     function testShouldRevertIfSourceAmountExceedsMaxInputOnTargetTokenToFinalTargetTokenTrades() public {
         vm.prank(admin);
         // set fees
-        uint256 accumulatedFees = 100 ether;
+        uint256 accumulatedFees = 100 * ONE_TARGET_TOKEN;
         carbonController.testSetAccumulatedFees(targetToken, accumulatedFees);
 
         vm.startPrank(user1);
@@ -1885,7 +1887,7 @@ contract CarbonVortexTest is TestFixture {
         carbonVortex.execute(tokens);
 
         // trade target token for final target token
-        uint128 targetAmount = 1 ether;
+        uint128 targetAmount = ONE_TARGET_TOKEN;
 
         // advance time to a point where the token is tradeable at a reasonable price
         vm.warp(40 days);
@@ -2014,7 +2016,7 @@ contract CarbonVortexTest is TestFixture {
         Token token = targetToken;
 
         // set fees
-        uint256 accumulatedFees = 100 ether;
+        uint256 accumulatedFees = 100 * ONE_TARGET_TOKEN;
         vm.prank(admin);
         carbonController.testSetAccumulatedFees(token, accumulatedFees);
 
@@ -2853,12 +2855,13 @@ contract CarbonVortexTest is TestFixture {
 
     /// @dev test price behaviour for the target token at auction start
     function testAuctionPriceBehaviourForTargetTokenAtStart() public {
-        vm.prank(admin);
+        vm.startPrank(admin);
 
         Token token = targetToken;
         // set accumulated fees for token
         uint256 accumulatedFees = 100 ether;
         carbonController.testSetAccumulatedFees(token, accumulatedFees);
+        carbonVortex.setMaxTargetTokenSaleAmount(uint128(accumulatedFees));
 
         vm.startPrank(user1);
 

@@ -977,7 +977,7 @@ abstract contract Strategies is Initializable {
         }
     }
 
-    function uncheckedInc(uint256 i) private pure returns (uint256 j) {
+    function uncheckedInc(uint256 i) internal pure returns (uint256 j) {
         unchecked {
             j = i + 1;
         }

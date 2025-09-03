@@ -38,6 +38,5 @@ tenderly.yaml
 scripts/test-network.ts
 scripts/temp.ts
 
-# Hedera documentation files
-HEDERA_DEPLOYMENT.md
-utils/hederaDeployment.md
+# Hedera local deployment files
+deployments/hedera-localnet

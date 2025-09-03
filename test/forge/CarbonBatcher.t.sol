@@ -49,6 +49,10 @@ contract CarbonBatcherTest is TestFixture {
         setupCarbonController();
         // Deploy Carbon Batcher
         deployCarbonBatcher(voucher);
+
+        // Mock Associate tokens to carbon controller
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(token0));
+        mockCallsHtsAssociateSuccess(address(carbonController), Token.unwrap(token1));
     }
 
     /**
